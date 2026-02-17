@@ -54,7 +54,7 @@
             font-size: 16px;
         }
 
-        button {
+        button.login-btn {
             background-color: var(--primary);
             color: white;
             border: none;
@@ -62,25 +62,19 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background-color: #4338ca;
         }
 
         /* Основной интерфейс */
         #main-app {
-            display: none; /* Скрыто по умолчанию */
+            display: none;
             max-width: 800px;
             margin: 0 auto;
             width: 100%;
             padding: 20px;
+            box-sizing: border-box;
         }
 
         header {
-            display: flex;
-            align-items: center;
             margin-bottom: 20px;
             border-bottom: 2px solid #e5e7eb;
             padding-bottom: 10px;
@@ -103,7 +97,12 @@
             background: var(--surface);
             color: var(--text);
             border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
             flex: 1;
+            font-weight: 500;
+            transition: 0.2s;
         }
 
         .tab-btn.active {
@@ -112,52 +111,75 @@
             border-color: var(--primary);
         }
 
-        /* Кнопки заданий */
+        /* Сетка с датами */
         .task-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Кнопки пошире для дат */
             gap: 10px;
             margin-bottom: 20px;
         }
 
-        .task-btn {
-            padding: 10px;
+        .date-btn {
+            padding: 12px 5px;
             background: var(--surface);
             border: 1px solid #ddd;
             color: var(--text);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+            text-align: center;
         }
 
-        .task-btn.active {
-            border: 2px solid var(--primary);
+        .date-btn:hover {
+            border-color: var(--primary);
+            background: #eef2ff;
+        }
+
+        .date-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
             font-weight: bold;
         }
 
         /* Область просмотра */
         .viewer {
             background: var(--surface);
-            padding: 10px;
+            padding: 15px;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             min-height: 300px;
             display: flex;
-            justify-content: center;
-            align-items: start;
+            flex-direction: column;
+            align-items: center;
         }
 
         .viewer img {
             max-width: 100%;
             height: auto;
             border-radius: 8px;
+            display: none;
         }
 
         .placeholder-text {
             color: #888;
             margin-top: 50px;
+            text-align: center;
         }
         
         .error-msg {
             color: red;
             margin-top: 10px;
+            display: none;
+        }
+        
+        .current-date-label {
+            align-self: flex-start;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary);
             display: none;
         }
     </style>
@@ -167,16 +189,16 @@
     <div id="login-screen">
         <div class="login-box">
             <h2>Пароль</h2>
-            <input type="password" id="password-input" placeholder="Введите пароль">
+            <input type="password" id="password-input" placeholder="Пароль">
             <br>
-            <button onclick="checkPassword()">Войти</button>
+            <button class="login-btn" onclick="checkPassword()">Войти</button>
             <p class="error-msg" id="login-error">Неверный пароль!</p>
         </div>
     </div>
 
     <div id="main-app">
         <header>
-            <h1>Ответы</h1>
+            <h1>ЦДЗ</h1>
         </header>
 
         <div class="subject-tabs">
@@ -188,34 +210,42 @@
             </div>
 
         <div class="viewer">
-            <img id="answer-image" src="" alt="Выберите задание" style="display: none;">
-            <p id="viewer-placeholder" class="placeholder-text">Выберите задание, чтобы увидеть ответ</p>
+            <div id="date-title" class="current-date-label"></div>
+            <img id="answer-image" src="" alt="Ответ">
+            <p id="viewer-placeholder" class="placeholder-text">Выберите дату урока,<br>чтобы увидеть ответ</p>
         </div>
     </div>
 
     <script>
         // ==========================================
-        // НАСТРОЙКИ ССЫЛОК
+        //  НАСТРОЙКИ: ДАТЫ И ССЫЛКИ
         // ==========================================
-        const answers = {
+        
+        const data = {
             biology: [
-                "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/1.png",
-                "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/2.png",
-                "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/3.png",
-                "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/4.png",
-                "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/5.png",
-                "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/6.png",
-                "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/7.png",
-                "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/8.png",
-                "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/9.png",
-                "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/10.png"
+                // Скопируй строчку ниже, чтобы добавить новую дату:
+                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/1.png" },
+                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/2.png" },
+                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/3.png" },
+                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/4.png" },
+                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/5.png" },
+                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/6.png" },
+                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/7.png" },
+                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/8.png" },
+                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/9.png" },
+                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/10.png" },
+                // ... добавляй новые строки сюда
             ],
+            
             informatics: [
-                "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/bio1.png",
-                "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/bio2.png",
-                "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/bio3.png"
+                { date: "19.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/bio1.png" },
+                { date: "19.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/bio2.png" },
+                { date: "19.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/bio3.png" },
             ]
         };
+
+        // ==========================================
+        //  ДАЛЬШЕ КОД НЕ ТРОГАЙ
         // ==========================================
 
         const loginScreen = document.getElementById('login-screen');
@@ -223,15 +253,15 @@
         const taskContainer = document.getElementById('task-container');
         const answerImage = document.getElementById('answer-image');
         const placeholder = document.getElementById('viewer-placeholder');
+        const dateTitle = document.getElementById('date-title');
         
         let currentSubject = 'biology';
 
-        // 1. Проверка входа при загрузке
+        // Проверка входа
         if (localStorage.getItem('school_auth') === 'true') {
             showApp();
         }
 
-        // 2. Функция входа
         function checkPassword() {
             const input = document.getElementById('password-input').value;
             if (input === '1') {
@@ -248,49 +278,61 @@
             loadTasks(currentSubject);
         }
 
-        // 3. Переключение предметов
         function setSubject(subject) {
             currentSubject = subject;
             
-            // Обновляем стили вкладок
+            // Стиль вкладок
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if(btn.innerText.toLowerCase().includes(subject === 'biology' ? 'биология' : 'информатика')) {
+                const btnText = btn.innerText.toLowerCase();
+                if ((subject === 'biology' && btnText.includes('био')) || 
+                    (subject === 'informatics' && btnText.includes('инф'))) {
                     btn.classList.add('active');
                 }
             });
 
-            // Сбрасываем просмотр
-            answerImage.style.display = 'none';
-            placeholder.style.display = 'block';
-            
+            // Сброс
+            resetViewer();
             loadTasks(subject);
         }
 
-        // 4. Загрузка кнопок заданий
         function loadTasks(subject) {
             taskContainer.innerHTML = '';
-            const links = answers[subject];
+            const items = data[subject];
 
-            links.forEach((link, index) => {
+            if (!items || items.length === 0) {
+                taskContainer.innerHTML = '<p style="color:#888; width:100%;">Нет заданий</p>';
+                return;
+            }
+
+            items.forEach((item) => {
                 const btn = document.createElement('button');
-                btn.className = 'task-btn';
-                btn.innerText = index + 1;
-                btn.onclick = () => showImage(link, btn);
+                btn.className = 'date-btn';
+                btn.innerText = item.date; // Показываем дату на кнопке
+                btn.onclick = () => showImage(item, btn);
                 taskContainer.appendChild(btn);
             });
         }
 
-        // 5. Показ картинки
-        function showImage(src, btn) {
-            // Подсветка активной кнопки
-            document.querySelectorAll('.task-btn').forEach(b => b.classList.remove('active'));
+        function showImage(item, btn) {
+            // Подсветка кнопки
+            document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
-            // Загрузка картинки
+            // Показ контента
             placeholder.style.display = 'none';
-            answerImage.src = src;
+            
+            dateTitle.innerText = "Задание за " + item.date;
+            dateTitle.style.display = 'block';
+
+            answerImage.src = item.link;
             answerImage.style.display = 'block';
+        }
+
+        function resetViewer() {
+            answerImage.style.display = 'none';
+            dateTitle.style.display = 'none';
+            placeholder.style.display = 'block';
         }
     </script>
 </body>
