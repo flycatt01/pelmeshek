@@ -1,457 +1,351 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Задания</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивная Панель Заданий</title>
+    <style>
+        /* ================================================
+           1. ПЕРЕМЕННЫЕ И ОСНОВА (DARK LUXURY THEME)
+           ================================================
+        */
+        :root {
+            --bg: #0a0a0c;
+            --card-bg: rgba(30, 30, 35, 0.7);
+            --inner-card: rgba(255, 255, 255, 0.04);
+            --accent: #00f2fe;
+            --accent-glow: rgba(0, 242, 254, 0.3);
+            --green: #4ade80;
+            --text-main: #ffffff;
+            --text-dim: #a1a1aa;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
-    <style>
-        /* ================================================================
-           MATERIAL DESIGN 3 - CORE TOKENS
-           ================================================================
-        */
-        :root {
-            --md-sys-color-background: #1c1b1f;
-            --md-sys-color-on-background: #e6e1e5;
-            --md-sys-color-surface: #25232a;
-            --md-sys-color-surface-container: #2b2930;
-            --md-sys-color-surface-container-high: #36343b;
-            --md-sys-color-primary: #d0bcff;
-            --md-sys-color-on-primary: #381e72;
-            --md-sys-color-secondary-container: #4a4458;
-            --md-sys-color-on-secondary-container: #e8def8;
-            --md-sys-color-outline: #938f99;
-            --md-sys-color-outline-variant: #49454f;
-            --md-sys-color-success: #b4eeb4;
-            --md-sys-color-surface-tint: #d0bcff;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
 
-            /* Размеры по гайдлайнам Google */
-            --md-sys-shape-corner-extra-large: 28px;
-            --md-sys-shape-corner-medium: 16px;
-            --md-sys-shape-corner-small: 12px;
-            
-            /* Тайминги анимаций */
-            --easing-standard: cubic-bezier(0.2, 0, 0, 1);
-            --duration-medium: 400ms;
-        }
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(0, 242, 254, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(74, 222, 128, 0.05) 0%, transparent 40%);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
 
-        /* ================================================================
-           RESET & GLOBAL STYLES
-           ================================================================
-        */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        /* ================================================
+           2. АНИМАЦИЯ ПОЯВЛЕНИЯ ПРИ СКРОЛЛЕ
+           ================================================
+        */
+        @keyframes reveal {
+            from {
+                opacity: 0;
+                transform: translateY(100px) scale(0.9);
+                filter: blur(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
 
-        body {
-            background-color: var(--md-sys-color-background);
-            color: var(--md-sys-color-on-background);
-            font-family: 'Roboto', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding-bottom: 80px;
-        }
+        .scroll-reveal {
+            /* Применяем анимацию при прокрутке */
+            view-timeline-name: --item-visible;
+            view-timeline-axis: block;
+            animation: reveal linear both;
+            animation-timeline: --item-visible;
+            animation-range: entry 10% cover 30%;
+            margin-bottom: 60px;
+            width: 100%;
+            max-width: 800px;
+        }
 
-        /* ================================================================
-           TOP APP BAR (Шапка как в Google приложениях)
-           ================================================================
-        */
-        .top-app-bar {
-            position: sticky;
-            top: 0;
-            width: 100%;
-            max-width: 800px;
-            height: 64px;
-            background: rgba(28, 27, 31, 0.95);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            z-index: 1000;
-            border-bottom: 1px solid var(--md-sys-color-outline-variant);
-        }
+        /* ================================================
+           3. ГЛАВНАЯ КАРТОЧКА (РОДИТЕЛЬ)
+           ================================================
+        */
+        .parent-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 40px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
 
-        .top-app-bar .icon {
-            color: var(--md-sys-color-on-background);
-            margin-right: 16px;
-            cursor: pointer;
-            border-radius: 50%;
-            padding: 8px;
-            transition: background 0.3s;
-        }
+        .parent-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent), var(--green));
+        }
 
-        .top-app-bar .icon:hover {
-            background: var(--md-sys-color-outline-variant);
-        }
+        .header-section {
+            margin-bottom: 30px;
+        }
 
-        .top-app-bar h1 {
-            font-family: 'Google Sans', sans-serif;
-            font-size: 22px;
-            font-weight: 400;
-            flex-grow: 1;
-        }
+        .task-id {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--accent), var(--green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
 
-        /* ================================================================
-           MAIN CONTAINER
-           ================================================================
-        */
-        .content-view {
-            width: 100%;
-            max-width: 680px;
-            padding: 16px;
-            margin-top: 8px;
-        }
+        .question-text {
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text-main);
+        }
 
-        /* ================================================================
-           TASK CARD (Родительская карточка)
-           ================================================================
-        */
-        .task-container {
-            background-color: var(--md-sys-color-surface);
-            border-radius: var(--md-sys-shape-corner-extra-large);
-            padding: 24px;
-            margin-bottom: 24px;
-            border: 1px solid var(--md-sys-color-outline-variant);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.3s var(--easing-standard);
-            animation: card-in 0.6s var(--easing-standard) backwards;
-        }
+        /* ================================================
+           4. ВЛОЖЕННЫЕ КАРТОЧКИ (ОТВЕТЫ)
+           ================================================
+        */
+        .answers-grid {
+            display: grid;
+            gap: 15px;
+        }
 
-        @keyframes card-in {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
+        .child-card {
+            background: var(--inner-card);
+            border-radius: 20px;
+            display: flex;
+            align-items: stretch;
+            min-height: 70px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+        }
 
-        .task-header {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 20px;
-        }
+        .child-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(15px) scale(1.02);
+            border-color: var(--accent);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
 
-        .task-number-chip {
-            background-color: var(--md-sys-color-secondary-container);
-            color: var(--md-sys-color-on-secondary-container);
-            padding: 6px 16px;
-            border-radius: var(--md-sys-shape-corner-medium);
-            font-family: 'Google Sans', sans-serif;
-            font-weight: 500;
-            font-size: 14px;
-            margin-right: 12px;
-            white-space: nowrap;
-        }
+        .green-side {
+            width: 6px;
+            background: var(--green);
+            border-radius: 20px 0 0 20px;
+            box-shadow: 4px 0 15px var(--green);
+            flex-shrink: 0;
+            opacity: 0.8;
+        }
 
-        .task-question {
-            font-family: 'Google Sans', sans-serif;
-            font-size: 18px;
-            line-height: 1.5;
-            color: #ffffff;
-            font-weight: 500;
-        }
+        .answer-content {
+            padding: 20px 25px;
+            font-size: 17px;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
 
-        /* ================================================================
-           ANSWER CARDS (Вложенные карточки)
-           ================================================================
-        */
-        .answers-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        .child-card:hover .answer-content {
+            color: #ffffff;
+        }
 
-        .answer-item {
-            position: relative;
-            background-color: var(--md-sys-color-surface-container);
-            border-radius: var(--md-sys-shape-corner-medium);
-            display: flex;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.2s var(--easing-standard);
-            border: 1px solid transparent;
-        }
+        /* ================================================
+           5. ТЕХНИЧЕСКИЕ ДЕТАЛИ И СКРОЛЛ
+           ================================================
+        */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
 
-        .answer-item:hover {
-            background-color: var(--md-sys-color-surface-container-high);
-            transform: translateX(4px);
-            border-color: var(--md-sys-color-outline-variant);
-        }
+        /* Заголовок страницы */
+        .main-title {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 60px;
+            text-align: center;
+            background: linear-gradient(to right, #fff, #666);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-        /* Зеленая боковая полоска */
-        .answer-accent {
-            width: 8px;
-            background-color: var(--md-sys-color-success);
-            box-shadow: 2px 0 8px rgba(180, 238, 180, 0.3);
-            flex-shrink: 0;
-        }
-
-        .answer-text {
-            padding: 16px 20px;
-            font-size: 16px;
-            color: var(--md-sys-color-on-surface);
-            line-height: 1.4;
-            display: flex;
-            align-items: center;
-        }
-
-        /* Эффект пульсации (Ripple) */
-        .answer-item::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.2);
-            opacity: 0;
-            border-radius: 100%;
-            transform: scale(1, 1) translate(-50%);
-            transform-origin: 50% 50%;
-        }
-
-        .answer-item:active::after {
-            animation: ripple 0.4s ease-out;
-        }
-
-        @keyframes ripple {
-            0% { transform: scale(0, 0); opacity: 0.5; }
-            100% { transform: scale(100, 100); opacity: 0; }
-        }
-
-        /* ================================================================
-           STAGGERED ANIMATIONS (Задержки для карточек)
-           ================================================================
-        */
-        .task-container:nth-child(2) { animation-delay: 0.1s; }
-        .task-container:nth-child(3) { animation-delay: 0.2s; }
-        .task-container:nth-child(4) { animation-delay: 0.3s; }
-        .task-container:nth-child(5) { animation-delay: 0.4s; }
-        .task-container:nth-child(6) { animation-delay: 0.5s; }
-        .task-container:nth-child(7) { animation-delay: 0.6s; }
-        .task-container:nth-child(8) { animation-delay: 0.7s; }
-        .task-container:nth-child(9) { animation-delay: 0.8s; }
-        .task-container:nth-child(10) { animation-delay: 0.9s; }
-
-        /* ================================================================
-           FLOATING ACTION BUTTON (Кнопка наверх)
-           ================================================================
-        */
-        .fab {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
-            background-color: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .fab:hover { transform: scale(1.1); }
-    </style>
+    </style>
 </head>
 <body>
 
-    <div class="top-app-bar">
-        <span class="material-icons-round icon">menu</span>
-        <h1>Задания по истории</h1>
-        <span class="material-icons-round icon">more_vert</span>
-    </div>
+    <h1 class="main-title">Интерактивный список</h1>
 
-    <main class="content-view">
+    <div class="scroll-reveal">
+        <div class="parent-container">
+            <div class="header-section">
+                <span class="task-id">Задание 1</span>
+                <div class="question-text">Каких названий удостаивали XVII век современники и историки?</div>
+            </div>
+            <div class="answers-grid">
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">«Век великого раскола»</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">«Смутный век»</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">«Век устроения»</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">«Богатырский век»</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">«Бунташный век»</div></div>
+            </div>
+        </div>
+    </div>
 
-        <article class="task-container">
-            <div class="task-header">
-                <span class="task-number-chip">Задание 1</span>
-                <h2 class="task-question">Каких названий удостаивали XVII век современники и историки?</h2>
-            </div>
-            <div class="answers-stack">
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">«Век великого раскола»</div>
-                </div>
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">«Смутный век»</div>
-                </div>
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">«Век устроения»</div>
-                </div>
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">«Богатырский век»</div>
-                </div>
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">«Бунташный век»</div>
-                </div>
-            </div>
-        </article>
+    <div class="scroll-reveal">
+        <div class="parent-container">
+            <div class="header-section">
+                <span class="task-id">Задание 2</span>
+                <div class="question-text">Куда продвинулись русские землепроходцы к середине XVII в.?</div>
+            </div>
+            <div class="answers-grid">
+                <div class="child-card">
+                    <div class="green-side"></div>
+                    <div class="answer-content">К побережью Тихого океана на востоке</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <article class="task-container">
-            <div class="task-header">
-                <span class="task-number-chip">Задание 2</span>
-                <h2 class="task-question">Куда продвинулись русские землепроходцы к середине XVII в.?</h2>
-            </div>
-            <div class="answers-stack">
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">К побережью Тихого океана на востоке</div>
-                </div>
-            </div>
-        </article>
+    <div class="scroll-reveal">
+        <div class="parent-container">
+            <div class="header-section">
+                <span class="task-id">Задание 3</span>
+                <div class="question-text">Какие ярмарки всероссийского значения были известны в XVII в.?</div>
+            </div>
+            <div class="answers-grid">
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Ирбитская ярмарка на Урале</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Макарьевская ярмарка на Волге</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Свенская ярмарка под Брянском</div></div>
+            </div>
+        </div>
+    </div>
 
-        <article class="task-container">
-            <div class="task-header">
-                <span class="task-number-chip">Задание 3</span>
-                <h2 class="task-question">Какие ярмарки всероссийского значения были известны в XVII в.?</h2>
-            </div>
-            <div class="answers-stack">
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">Ирбитская ярмарка на Урале</div>
-                </div>
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">Макарьевская ярмарка на Волге</div>
-                </div>
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">Свенская ярмарка под Брянском</div>
-                </div>
-            </div>
-        </article>
+    <div class="scroll-reveal">
+        <div class="parent-container">
+            <div class="header-section">
+                <span class="task-id">Задание 4</span>
+                <div class="question-text">Купцы какой страны занимали ведущие позиции на российском рынке до середины XVII в.?</div>
+            </div>
+            <div class="answers-grid">
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Англии</div></div>
+            </div>
+        </div>
+    </div>
 
-        <article class="task-container">
-            <div class="task-header">
-                <span class="task-number-chip">Задание 4</span>
-                <h2 class="task-question">Купцы какой страны занимали ведущие позиции на российском рынке до середины XVII в.?</h2>
-            </div>
-            <div class="answers-stack">
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">Англии</div>
-                </div>
-            </div>
-        </article>
+    <div class="scroll-reveal">
+        <div class="parent-container">
+            <div class="header-section">
+                <span class="task-id">Задание 5</span>
+                <div class="question-text">Через какой город в основном велась внешняя торговля с западноевропейскими странами в XVII в.?</div>
+            </div>
+            <div class="answers-grid">
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Архангельск</div></div>
+            </div>
+        </div>
+    </div>
 
-        <article class="task-container">
-            <div class="task-header">
-                <span class="task-number-chip">Задание 5</span>
-                <h2 class="task-question">Через какой город в основном велась внешняя торговля с западноевропейскими странами в XVII в.?</h2>
-            </div>
-            <div class="answers-stack">
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">Архангельск</div>
-                </div>
-            </div>
-        </article>
+    <div class="scroll-reveal">
+        <div class="parent-container">
+            <div class="header-section">
+                <span class="task-id">Задание 6</span>
+                <div class="question-text">Какова была роль государства в строительстве мануфактур в России в XVII в.?</div>
+            </div>
+            <div class="answers-grid">
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Государство выступало главным покупателем продукции мануфактур.</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Государство выступало инициатором создания мануфактур.</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Государство выступало главным кредитором строительства мануфактур.</div></div>
+            </div>
+        </div>
+    </div>
 
-        <article class="task-container">
-            <div class="task-header">
-                <span class="task-number-chip">Задание 6</span>
-                <h2 class="task-question">Какова была роль государства в строительстве мануфактур в России в XVII в.?</h2>
-            </div>
-            <div class="answers-stack">
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">Государство выступало главным покупателем продукции мануфактур.</div>
-                </div>
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">Государство выступало инициатором создания мануфактур.</div>
-                </div>
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">Государство выступало главным кредитором строительства мануфактур.</div>
-                </div>
-            </div>
-        </article>
+    <div class="scroll-reveal">
+        <div class="parent-container">
+            <div class="header-section">
+                <span class="task-id">Задание 7</span>
+                <div class="question-text">Какие отрасли были основными в экономике России в XVII в.?</div>
+            </div>
+            <div class="answers-grid">
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Мануфактурное производство</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Сельское хозяйство</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Ремесленное производство</div></div>
+            </div>
+        </div>
+    </div>
 
-        <article class="task-container">
-            <div class="task-header">
-                <span class="task-number-chip">Задание 7</span>
-                <h2 class="task-question">Какие отрасли были основными в экономике России в XVII в.?</h2>
-            </div>
-            <div class="answers-stack">
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">Мануфактурное производство</div>
-                </div>
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">Сельское хозяйство</div>
-                </div>
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">Ремесленное производство</div>
-                </div>
-            </div>
-        </article>
+    <div class="scroll-reveal">
+        <div class="parent-container">
+            <div class="header-section">
+                <span class="task-id">Задание 8</span>
+                <div class="question-text">Кто был строителем первых мануфактур в России?</div>
+            </div>
+            <div class="answers-grid">
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Голландец Андрей Виниус</div></div>
+            </div>
+        </div>
+    </div>
 
-        <article class="task-container">
-            <div class="task-header">
-                <span class="task-number-chip">Задание 8</span>
-                <h2 class="task-question">Кто был строителем первых мануфактур в России?</h2>
-            </div>
-            <div class="answers-stack">
-                <div class="answer-item">
-                    <div class="answer-accent"></div>
-                    <div class="answer-text">Голландец Андрей Виниус</div>
-                </div>
-            </div>
-        </article>
+    <div class="scroll-reveal">
+        <div class="parent-container">
+            <div class="header-section">
+                <span class="task-id">Задание 9</span>
+                <div class="question-text">Какими основными изменениями характеризуется экономическое развитие России в XVII в.?</div>
+            </div>
+            <div class="answers-grid">
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Формирование единого всероссийского рынка</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Экстенсивное развитие хозяйства</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Появление мануфактур</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Развитие мелкотоварного ремесленного производства</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Расширение внутренней и внешней торговли</div></div>
+            </div>
+        </div>
+    </div>
 
-        <article class="task-container">
-            <div class="task-header">
-                <span class="task-number-chip">Задание 9</span>
-                <h2 class="task-question">Какими основными изменениями характеризуется экономическое развитие России в XVII в.?</h2>
-            </div>
-            <div class="answers-stack">
-                <div class="answer-item"><div class="answer-accent"></div><div class="answer-text">Формирование единого всероссийского рынка</div></div>
-                <div class="answer-item"><div class="answer-accent"></div><div class="answer-text">Экстенсивное развитие хозяйства</div></div>
-                <div class="answer-item"><div class="answer-accent"></div><div class="answer-text">Появление мануфактур</div></div>
-                <div class="answer-item"><div class="answer-accent"></div><div class="answer-text">Развитие мелкотоварного ремесленного производства</div></div>
-                <div class="answer-item"><div class="answer-accent"></div><div class="answer-text">Расширение внутренней и внешней торговли</div></div>
-            </div>
-        </article>
+    <div class="scroll-reveal">
+        <div class="parent-container">
+            <div class="header-section">
+                <span class="task-id">Задание 10</span>
+                <div class="question-text">Какие изменения происходили в российской деревне в XVII в.?</div>
+            </div>
+            <div class="answers-grid">
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Укрупнение деревень</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Развитие скотоводства</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Вовлечение в оборот заброшенных пашень и новых земель</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Рост числа выращиваемых культур</div></div>
+                <div class="child-card"><div class="green-side"></div><div class="answer-content">Развитие промыслов</div></div>
+            </div>
+        </div>
+    </div>
 
-        <article class="task-container">
-            <div class="task-header">
-                <span class="task-number-chip">Задание 10</span>
-                <h2 class="task-question">Какие изменения происходили в российской деревне в XVII в.?</h2>
-            </div>
-            <div class="answers-stack">
-                <div class="answer-item"><div class="answer-accent"></div><div class="answer-text">Укрупнение деревень</div></div>
-                <div class="answer-item"><div class="answer-accent"></div><div class="answer-text">Развитие скотоводства</div></div>
-                <div class="answer-item"><div class="answer-accent"></div><div class="answer-text">Вовлечение в оборот заброшенных пашень и новых земель</div></div>
-                <div class="answer-item"><div class="answer-accent"></div><div class="answer-text">Рост числа выращиваемых культур</div></div>
-                <div class="answer-item"><div class="answer-accent"></div><div class="answer-text">Развитие промыслов</div></div>
-            </div>
-        </article>
-
-    </main>
-
-    <div class="fab" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-        <span class="material-icons-round">arrow_upward</span>
-    </div>
+    <p style="color: var(--text-dim); margin-top: 40px; font-size: 12px; letter-spacing: 1px;">&copy; 2026 PREMIUM INTERFACE</p>
 
 </body>
 </html>
