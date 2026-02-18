@@ -1,339 +1,180 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Пельмешек</title>
-    <style>
-        :root {
-            --primary: #4f46e5;
-            --bg: #f3f4f6;
-            --surface: #ffffff;
-            --text: #1f2937;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЦДЗ Material Design</title>
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
+    <style>
+        :root {
+            /* Material Design 3 Dark Colors */
+            --bg-color: #1c1b1f;
+            --surface: #2b2930;
+            --surface-variant: #49454f;
+            --primary: #d0bcff;
+            --on-primary: #381e72;
+            --secondary: #ccc2dc;
+            --success: #b4eeb4;
+            --accent-green: #2e7d32;
+            --text-main: #e6e1e5;
+            --text-sub: #cac4d0;
+        }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-        /* Экран входа */
-        #login-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
 
-        .login-box {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            text-align: center;
-        }
+        header {
+            width: 100%;
+            padding: 40px 0;
+            text-align: center;
+            animation: fadeInDown 0.8s ease;
+        }
 
-        input {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            width: 200px;
-            font-size: 16px;
-        }
+        h1 {
+            font-weight: 300;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin: 0;
+        }
 
-        button.login-btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-        }
+        /* Главная карточка задания */
+        .task-card {
+            background: var(--surface);
+            border-radius: 28px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            border: 1px solid var(--surface-variant);
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
 
-        /* Основной интерфейс */
-        #main-app {
-            display: none;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-            padding: 20px;
-            box-sizing: border-box;
-        }
+        .task-header {
+            margin-bottom: 20px;
+        }
 
-        header {
-            margin-bottom: 20px;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 10px;
-        }
+        .task-number {
+            display: inline-block;
+            background: var(--on-primary);
+            color: var(--primary);
+            padding: 4px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-        h1 {
-            font-size: 24px;
-            margin: 0;
-            color: var(--primary);
-        }
+        .task-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
 
-        /* Вкладки предметов */
-        .subject-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+        /* Контейнер для ответов внутри */
+        .answers-container {
+            display: grid;
+            gap: 12px;
+            margin-top: 20px;
+        }
 
-        .tab-btn {
-            background: var(--surface);
-            color: var(--text);
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            flex: 1;
-            font-weight: 500;
-            transition: 0.2s;
-        }
+        /* Карточка ответа */
+        .answer-item {
+            background: var(--surface-variant);
+            border-radius: 12px;
+            display: flex;
+            overflow: hidden;
+            transition: transform 0.2s, background 0.2s;
+            cursor: pointer;
+        }
 
-        .tab-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
+        .answer-item:hover {
+            transform: translateX(8px);
+            background: #56515d;
+        }
 
-        /* Сетка с датами */
-        .task-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Кнопки пошире для дат */
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+        .green-side {
+            width: 6px;
+            background-color: var(--accent-green);
+            box-shadow: 0 0 10px rgba(46, 125, 50, 0.5);
+        }
 
-        .date-btn {
-            padding: 12px 5px;
-            background: var(--surface);
-            border: 1px solid #ddd;
-            color: var(--text);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: 0.2s;
-            text-align: center;
-        }
+        .answer-content {
+            padding: 16px;
+            font-size: 1rem;
+            color: var(--text-sub);
+        }
 
-        .date-btn:hover {
-            border-color: var(--primary);
-            background: #eef2ff;
-        }
+        /* Анимации */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        .date-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            font-weight: bold;
-        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        /* Область просмотра */
-        .viewer {
-            background: var(--surface);
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            min-height: 300px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        /* Задержка появления для красоты */
+        .task-card:nth-child(2) { animation-delay: 0.1s; }
+        .task-card:nth-child(3) { animation-delay: 0.2s; }
 
-        .viewer img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            display: none;
-        }
-
-        .placeholder-text {
-            color: #888;
-            margin-top: 50px;
-            text-align: center;
-        }
-        
-        .error-msg {
-            color: red;
-            margin-top: 10px;
-            display: none;
-        }
-        
-        .current-date-label {
-            align-self: flex-start;
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: var(--primary);
-            display: none;
-        }
-    </style>
+    </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-box">
-            <h2>Пароль</h2>
-            <input type="password" id="password-input" placeholder="Пароль">
-            <br>
-            <button class="login-btn" onclick="checkPassword()">Войти</button>
-            <p class="error-msg" id="login-error">Неверный пароль!</p>
-        </div>
-    </div>
+    <header>
+        <h1>Цифровое Домашнее Задание</h1>
+    </header>
 
-    <div id="main-app">
-        <header>
-            <h1>ЦДЗ</h1>
-        </header>
+    <div class="container" id="app">
+        <!-- Генерация 10 карточек через JS для чистоты кода -->
+    </div>
 
-        <div class="subject-tabs">
-            <button class="tab-btn active" onclick="setSubject('biology')">Биология</button>
-            <button class="tab-btn" onclick="setSubject('informatics')">Информатика</button>
-        </div>
-
-        <div class="task-grid" id="task-container">
-            </div>
-
-        <div class="viewer">
-            <div id="date-title" class="current-date-label"></div>
-            <img id="answer-image" src="" alt="Ответ">
-            <p id="viewer-placeholder" class="placeholder-text">Выберите дату урока,<br>чтобы увидеть ответ</p>
-        </div>
-    </div>
-
-    <script>
-        // ==========================================
-        //  НАСТРОЙКИ: ДАТЫ И ССЫЛКИ
-        // ==========================================
-        
-        const data = {
-            biology: [
-                // Скопируй строчку ниже, чтобы добавить новую дату:
-                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/1.png" },
-                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/2.png" },
-                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/3.png" },
-                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/4.png" },
-                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/5.png" },
-                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/6.png" },
-                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/7.png" },
-                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/8.png" },
-                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/9.png" },
-                { date: "17.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/10.png" },
-                // ... добавляй новые строки сюда
-            ],
-            
-            informatics: [
-                { date: "19.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/bio1.png" },
-                { date: "19.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/bio2.png" },
-                { date: "19.02", link: "https://raw.githubusercontent.com/flycatt01/pelmeshek/refs/heads/main/bio3.png" },
-            ]
-        };
-
-        // ==========================================
-        //  ДАЛЬШЕ КОД НЕ ТРОГАЙ
-        // ==========================================
-
-        const loginScreen = document.getElementById('login-screen');
-        const mainApp = document.getElementById('main-app');
-        const taskContainer = document.getElementById('task-container');
-        const answerImage = document.getElementById('answer-image');
-        const placeholder = document.getElementById('viewer-placeholder');
-        const dateTitle = document.getElementById('date-title');
-        
-        let currentSubject = 'biology';
-
-        // Проверка входа
-        if (localStorage.getItem('school_auth') === 'true') {
-            showApp();
-        }
-
-        function checkPassword() {
-            const input = document.getElementById('password-input').value;
-            if (input === '1') {
-                localStorage.setItem('school_auth', 'true');
-                showApp();
-            } else {
-                document.getElementById('login-error').style.display = 'block';
-            }
-        }
-
-        function showApp() {
-            loginScreen.style.display = 'none';
-            mainApp.style.display = 'block';
-            loadTasks(currentSubject);
-        }
-
-        function setSubject(subject) {
-            currentSubject = subject;
-            
-            // Стиль вкладок
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-                const btnText = btn.innerText.toLowerCase();
-                if ((subject === 'biology' && btnText.includes('био')) || 
-                    (subject === 'informatics' && btnText.includes('инф'))) {
-                    btn.classList.add('active');
-                }
-            });
-
-            // Сброс
-            resetViewer();
-            loadTasks(subject);
-        }
-
-        function loadTasks(subject) {
-            taskContainer.innerHTML = '';
-            const items = data[subject];
-
-            if (!items || items.length === 0) {
-                taskContainer.innerHTML = '<p style="color:#888; width:100%;">Нет заданий</p>';
-                return;
-            }
-
-            items.forEach((item) => {
-                const btn = document.createElement('button');
-                btn.className = 'date-btn';
-                btn.innerText = item.date; // Показываем дату на кнопке
-                btn.onclick = () => showImage(item, btn);
-                taskContainer.appendChild(btn);
-            });
-        }
-
-        function showImage(item, btn) {
-            // Подсветка кнопки
-            document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            // Показ контента
-            placeholder.style.display = 'none';
-            
-            dateTitle.innerText = "Задание за " + item.date;
-            dateTitle.style.display = 'block';
-
-            answerImage.src = item.link;
-            answerImage.style.display = 'block';
-        }
-
-        function resetViewer() {
-            answerImage.style.display = 'none';
-            dateTitle.style.display = 'none';
-            placeholder.style.display = 'block';
-        }
-    </script>
+    <script>
+        const container = document.getElementById('app');
+        
+        for (let i = 1; i <= 10; i++) {
+            const taskHTML = `
+                <div class="task-card">
+                    <div class="task-header">
+                        <div class="task-number">Задание №${i}</div>
+                        <div class="task-text">Выполните анализ текста и выберите правильные утверждения из списка ниже. Убедитесь в точности расчетов.</div>
+                    </div>
+                    
+                    <div class="answers-container">
+                        <div class="answer-item">
+                            <div class="green-side"></div>
+                            <div class="answer-content">Вариант А: Оптимальное решение найдено</div>
+                        </div>
+                        <div class="answer-item">
+                            <div class="green-side"></div>
+                            <div class="answer-content">Вариант Б: Требуется дополнительная проверка данных</div>
+                        </div>
+                        <div class="answer-item">
+                            <div class="green-side"></div>
+                            <div class="answer-content">Вариант В: Значение соответствует константе</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += taskHTML;
+        }
+    </script>
 </body>
 </html>
