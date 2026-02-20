@@ -3,327 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Социально-экономическое развитие России в XVII в.</title>
+    <title>Сайт временно недоступен</title>
     <style>
-        :root {
-            --bg: #0a0a0c;
-            --card-bg: rgba(30, 30, 35, 0.7);
-            --inner-card: rgba(255, 255, 255, 0.04);
-            --accent: #00f2fe;
-            --accent-glow: rgba(0, 242, 254, 0.3);
-            --green: #4ade80;
-            --text-main: #ffffff;
-            --text-dim: #a1a1aa;
-            --glass-border: rgba(255, 255, 255, 0.1);
-        }
-
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background-color: var(--bg);
-            background-image: 
-                radial-gradient(circle at 20% 20%, rgba(0, 242, 254, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(74, 222, 128, 0.05) 0%, transparent 40%);
-            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #1e1e2f 0%, #12121c 100%);
+            color: #ffffff;
+            height: 100vh;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 40px 20px;
-            overflow-x: hidden;
-        }
-
-        @keyframes reveal {
-            from {
-                opacity: 0;
-                transform: translateY(100px) scale(0.9);
-                filter: blur(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-                filter: blur(0);
-            }
-        }
-
-        .scroll-reveal {
-            view-timeline-name: --item-visible;
-            view-timeline-axis: block;
-            animation: reveal linear both;
-            animation-timeline: --item-visible;
-            animation-range: entry 10% cover 30%;
-            margin-bottom: 60px;
-            width: 100%;
-            max-width: 800px;
-        }
-        
-        .parent-container {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 40px;
-            padding: 40px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            position: relative;
             overflow: hidden;
         }
 
-        .parent-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(to bottom, var(--accent), var(--green));
-        }
-
-        .header-section {
-            margin-bottom: 30px;
-        }
-
-        .task-id {
-            display: inline-block;
-            background: linear-gradient(90deg, var(--accent), var(--green));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-        }
-
-        .question-text {
-            font-size: 24px;
-            font-weight: 600;
-            line-height: 1.4;
-            color: var(--text-main);
-        }
-
-        .answers-grid {
-            display: grid;
-            gap: 15px;
-        }
-
-        .child-card {
-            background: var(--inner-card);
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            display: flex;
-            align-items: stretch;
-            min-height: 70px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .child-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateX(15px) scale(1.02);
-            border-color: var(--accent);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        .green-side {
-            width: 6px;
-            background: var(--green);
-            border-radius: 20px 0 0 20px;
-            box-shadow: 4px 0 15px var(--green);
-            flex-shrink: 0;
-            opacity: 0.8;
-        }
-
-        .answer-content {
-            padding: 20px 25px;
-            font-size: 17px;
-            color: var(--text-dim);
-            display: flex;
-            align-items: center;
-            transition: color 0.3s;
-        }
-
-        .child-card:hover .answer-content {
-            color: #ffffff;
-        }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--glass-border);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent);
-        }
-
-        .main-title {
-            font-size: 42px;
-            font-weight: 800;
-            margin-bottom: 60px;
+            padding: 60px 40px;
             text-align: center;
-            background: linear-gradient(to right, #fff, #666);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1s ease-out;
         }
 
+        .smiley {
+            margin-bottom: 25px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #f8fafc;
+            letter-spacing: 0.5px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 15px;
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        /* Анимация появления контейнера */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Анимация парения смайлика */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
     </style>
 </head>
 <body>
 
-    <h1 class="main-title">Социально-экономическое развитие России в XVII в.</h1>
-
-    <div class="scroll-reveal">
-        <div class="parent-container">
-            <div class="header-section">
-                <span class="task-id">Задание 1</span>
-                <div class="question-text">Каких названий удостаивали XVII век современники и историки?</div>
-            </div>
-            <div class="answers-grid">
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">«Век великого раскола»</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">«Смутный век»</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">«Век устроения»</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">«Богатырский век»</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">«Бунташный век»</div></div>
-            </div>
+    <div class="container">
+        <div class="smiley">
+            <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="8" y1="9" x2="8.01" y2="9" stroke-width="3"></line>
+                <line x1="16" y1="9" x2="16.01" y2="9" stroke-width="3"></line>
+                <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+            </svg>
         </div>
+        
+        <h1>Сайт сейчас не работает</h1>
+        <p>Технические работы на сервере.</p>
+        <p class="highlight">Работы закончатся: когда надо</p>
     </div>
-
-    <div class="scroll-reveal">
-        <div class="parent-container">
-            <div class="header-section">
-                <span class="task-id">Задание 2</span>
-                <div class="question-text">Куда продвинулись русские землепроходцы к середине XVII в.?</div>
-            </div>
-            <div class="answers-grid">
-                <div class="child-card">
-                    <div class="green-side"></div>
-                    <div class="answer-content">К побережью Тихого океана на востоке</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="scroll-reveal">
-        <div class="parent-container">
-            <div class="header-section">
-                <span class="task-id">Задание 3</span>
-                <div class="question-text">Какие ярмарки всероссийского значения были известны в XVII в.?</div>
-            </div>
-            <div class="answers-grid">
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Ирбитская ярмарка на Урале</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Макарьевская ярмарка на Волге</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Свенская ярмарка под Брянском</div></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="scroll-reveal">
-        <div class="parent-container">
-            <div class="header-section">
-                <span class="task-id">Задание 4</span>
-                <div class="question-text">Купцы какой страны занимали ведущие позиции на российском рынке до середины XVII в.?</div>
-            </div>
-            <div class="answers-grid">
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Англии</div></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="scroll-reveal">
-        <div class="parent-container">
-            <div class="header-section">
-                <span class="task-id">Задание 5</span>
-                <div class="question-text">Через какой город в основном велась внешняя торговля с западноевропейскими странами в XVII в.?</div>
-            </div>
-            <div class="answers-grid">
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Архангельск</div></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="scroll-reveal">
-        <div class="parent-container">
-            <div class="header-section">
-                <span class="task-id">Задание 6</span>
-                <div class="question-text">Какова была роль государства в строительстве мануфактур в России в XVII в.?</div>
-            </div>
-            <div class="answers-grid">
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Государство выступало главным покупателем продукции мануфактур.</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Государство выступало инициатором создания мануфактур.</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Государство выступало главным кредитором строительства мануфактур.</div></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="scroll-reveal">
-        <div class="parent-container">
-            <div class="header-section">
-                <span class="task-id">Задание 7</span>
-                <div class="question-text">Какие отрасли были основными в экономике России в XVII в.?</div>
-            </div>
-            <div class="answers-grid">
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Мануфактурное производство</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Сельское хозяйство</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Ремесленное производство</div></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="scroll-reveal">
-        <div class="parent-container">
-            <div class="header-section">
-                <span class="task-id">Задание 8</span>
-                <div class="question-text">Кто был строителем первых мануфактур в России?</div>
-            </div>
-            <div class="answers-grid">
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Голландец Андрей Виниус</div></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="scroll-reveal">
-        <div class="parent-container">
-            <div class="header-section">
-                <span class="task-id">Задание 9</span>
-                <div class="question-text">Какими основными изменениями характеризуется экономическое развитие России в XVII в.?</div>
-            </div>
-            <div class="answers-grid">
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Формирование единого всероссийского рынка</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Экстенсивное развитие хозяйства</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Появление мануфактур</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Развитие мелкотоварного ремесленного производства</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Расширение внутренней и внешней торговли</div></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="scroll-reveal">
-        <div class="parent-container">
-            <div class="header-section">
-                <span class="task-id">Задание 10</span>
-                <div class="question-text">Какие изменения происходили в российской деревне в XVII в.?</div>
-            </div>
-            <div class="answers-grid">
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Укрупнение деревень</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Развитие скотоводства</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Вовлечение в оборот заброшенных пашень и новых земель</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Рост числа выращиваемых культур</div></div>
-                <div class="child-card"><div class="green-side"></div><div class="answer-content">Развитие промыслов</div></div>
-            </div>
-        </div>
-    </div>
-
-    <p style="color: var(--text-dim); margin-top: 40px; font-size: 12px; letter-spacing: 1px;">&copy; Данил Колбасенко</p>
 
 </body>
 </html>
